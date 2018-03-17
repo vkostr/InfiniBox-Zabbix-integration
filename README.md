@@ -14,6 +14,7 @@ Place and configure the start of scripts to fill objects with data (infzabbix_* 
 The scripts for filling objects with data are intended to run from cron, because Zabbix has a short timeout for the script, and it does not have enough time to execute. Scripts are configured to run every hour, if you plan to run more often / less often, you need to correct the page_size field for payload2, and considering that the smallest record granularity in InfiniMetrics is 10 seconds. The field has a limit of 10,000 records, if you need more, then you need to use several pages for the query. The value should be set more than the crom run interval to add the execution time of the script itself.
 
 Was tested at SW below and using the following python modules
+
 Python 3.4.3, modules requests 2.18.4, urllib3 1.22, pip 9.0.1 (for installing modules)
 https://pypi.python.org/pypi/requests/2.18.4
 https://pypi.python.org/pypi/urllib3/1.22
