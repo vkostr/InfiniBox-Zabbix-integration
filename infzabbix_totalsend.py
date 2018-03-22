@@ -5,16 +5,18 @@ from calendar import timegm
 from requests.auth import HTTPBasicAuth
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 zabbixIP = "127.0.0.1"
-serial = "serial"
+# if many Infiniboxes monitored by one Infinimetrix use: serial_numbers = ["serial_1","serial_2","serial_x"]
+serial_numbers = ["serial"]
 infinimetrics_ip = "127.0.0.1"
 login = 'login'
 password = 'password'
-payload = {'sort': '-timestamp', 'page_size': '10000'}
-total = requests.get('https://'+infinimetrics_ip+'/api/rest/systems/'+serial+'/monitored_entities/1/data/', auth=HTTPBasicAuth(login,password), params=payload, verify=False)
-data = total.json()
+payload = {'sort': '-timestamp', 'page_size': '450'}
 filename = "/tmp/total_perf.txt"
 outfile = open(filename,"w")
-for timestamp in data['result']:
+for serial in serial_numbers:
+ total = requests.get('http://'+infinimetrics_ip+'/api/rest/systems/'+serial+'/monitored_entities/1/data/', auth=HTTPBasicAuth(login,password), params=payload, verify=False)
+ data = total.json()
+ for timestamp in data['result']:
                                 timedata = timestamp['timestamp']
                                 epoch = timegm(time.strptime(timedata.replace('Z', 'UTC'),'%Y-%m-%dT%H:%M:%S%Z'))
                                 read_bandwidth_MB = int(timestamp['read_bytes']) / 1048576

@@ -9,7 +9,7 @@ imx = str(sys.argv[2])
 login = 'login'
 password = 'password'
 payload = {'sort': '-timestamp', 'page_size': '10000'}
-r = requests.get('https://'+imx+'/api/rest/systems/'+serial+'/monitored_entities/', auth=HTTPBasicAuth(login,password), params=payload, verify=False)
+r = requests.get('http://'+imx+'/api/rest/systems/'+serial+'/monitored_entities/', auth=HTTPBasicAuth(login,password), params=payload, verify=False)
 data = r.json()
 jdata = []
 for id in data['result']:

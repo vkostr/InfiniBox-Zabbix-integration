@@ -5,23 +5,25 @@ from calendar import timegm
 from requests.auth import HTTPBasicAuth
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 zabbixIP = "127.0.0.1"
-serial = "serial"
+# if many Infiniboxes monitored by one Infinimetrix use: serial_numbers = ["serial_1","serial_2","serial_x"]
+serial_numbers = ["serial"]
 infinimetrics_ip = "127.0.0.1"
 login = 'login'
 password = 'password'
 payload = {'sort': '-timestamp', 'page_size': '10000'}
-host_ids = requests.get('https://'+infinimetrics_ip+'/api/rest/systems/'+serial+'/monitored_entities/', auth=HTTPBasicAuth(login,password), params=payload, verify=False)
-data = host_ids.json()
 filename = "/tmp/host_perf.txt"
 outfile = open(filename,"w")
-for id in data['result']:
- if id['type'] == 'Host':
-  id_str = str(id['id'])
-  payload2 = {'sort': '-timestamp', 'page_size': '450'}
-  host_data = requests.get('https://'+infinimetrics_ip+'/api/rest/systems/'+serial+'/monitored_entities/'+id_str+'/data/', auth=HTTPBasicAuth(login,password), params=payload2, verify=False)
-  host_name = id['name']
-  vdata = host_data.json()
-  for timestamp in vdata['result']:
+for serial in serial_numbers:
+ hst_ids = requests.get('http://'+infinimetrics_ip+'/api/rest/systems/'+serial+'/monitored_entities/', auth=HTTPBasicAuth(login,password), params=payload, verify=False)
+ data = hst_ids.json()
+ for id in data['result']:
+  if id['type'] == 'Host':
+   id_str = str(id['id'])
+   payload2 = {'sort': '-timestamp', 'page_size': '450'}
+   host_data = requests.get('http://'+infinimetrics_ip+'/api/rest/systems/'+serial+'/monitored_entities/'+id_str+'/data/', auth=HTTPBasicAuth(login,password), params=payload2, verify=False)
+   host_name = id['name']
+   vdata = host_data.json()
+   for timestamp in vdata['result']:
                                 timedata = timestamp['timestamp']
                                 epoch = timegm(time.strptime(timedata.replace('Z', 'UTC'),'%Y-%m-%dT%H:%M:%S%Z'))
                                 read_bandwidth_MB = int(timestamp['read_bytes']) / 1048576

@@ -5,23 +5,25 @@ from calendar import timegm
 from requests.auth import HTTPBasicAuth
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 zabbixIP = "127.0.0.1"
-serial = "serial"
+# if many Infiniboxes monitored by one Infinimetrix use: serial_numbers = ["serial_1","serial_2","serial_x"]
+serial_numbers = ["serial"]
 infinimetrics_ip = "127.0.0.1"
 login = 'login'
 password = 'password'
 payload = {'sort': '-timestamp', 'page_size': '10000'}
-vol_ids = requests.get('https://'+infinimetrics_ip+'/api/rest/systems/'+serial+'/monitored_entities/', auth=HTTPBasicAuth(login,password), params=payload, verify=False)
-data = vol_ids.json()
 filename = "/tmp/vol_perf.txt"
 outfile = open(filename,"w")
-for id in data['result']:
- if id['type'] == 'Volume':
-  id_str = str(id['id'])
-  payload2 = {'sort': '-timestamp', 'page_size': '450'}
-  vol_data = requests.get('https://'+infinimetrics_ip+'/api/rest/systems/'+serial+'/monitored_entities/'+id_str+'/data/', auth=HTTPBasicAuth(login,password), params=payload2, verify=False)
-  vol_name = id['name']
-  vdata = vol_data.json()
-  for timestamp in vdata['result']:
+for serial in serial_numbers:
+ vol_ids = requests.get('http://'+infinimetrics_ip+'/api/rest/systems/'+serial+'/monitored_entities/', auth=HTTPBasicAuth(login,password), params=payload, verify=False)
+ data = vol_ids.json()
+ for id in data['result']:
+  if id['type'] == 'Volume':
+   id_str = str(id['id'])
+   payload2 = {'sort': '-timestamp', 'page_size': '450'}
+   vol_data = requests.get('http://'+infinimetrics_ip+'/api/rest/systems/'+serial+'/monitored_entities/'+id_str+'/data/', auth=HTTPBasicAuth(login,password), params=payload2, verify=False)
+   vol_name = id['name']
+   vdata = vol_data.json()
+   for timestamp in vdata['result']:
                                 timedata = timestamp['timestamp']
                                 epoch = timegm(time.strptime(timedata.replace('Z', 'UTC'),'%Y-%m-%dT%H:%M:%S%Z'))
                                 read_bandwidth_MB = int(timestamp['read_bytes']) / 1048576
