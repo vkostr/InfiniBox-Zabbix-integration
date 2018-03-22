@@ -37,8 +37,8 @@ https://pypi.python.org/pypi/urllib3/1.22
 https://bootstrap.pypa.io/get-pip.py
 
 
-If you have only Python 2 then _#!/usr/bin/env python3_ in all scripts should be changed to _#!/usr/bin/env python and in infzabbix\_\* send.py_ scripts after it need to be added _from \_\_future\_\_ import print_function_ like below
+If you have only Python 2 then _#!/usr/bin/env python3_ in all scripts should be changed to _#!/usr/bin/env python_ and in infzabbix\_\* send.py scripts after it need to be added _from \_\_future\_\_ import print\_function_ like below
 
-_#!/usr/bin/env python
+#!/usr/bin/env python
 
-_from \_\_future\_\_ import print\_function
+from \_\_future\_\_ import print\_function
