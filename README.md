@@ -39,6 +39,6 @@ https://bootstrap.pypa.io/get-pip.py
 
 If you have only Python 2 then _#!/usr/bin/env python3_ in all scripts should be changed to _#!/usr/bin/env python_ and in infzabbix\_\* send.py scripts after it need to be added _from \_\_future\_\_ import print\_function_ like below
 
-#!/usr/bin/env python
+_#!/usr/bin/env python_
 
-from \_\_future\_\_ import print\_function
+_from \_\_future\_\_ import print\_function_
